@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>My ticket — AI Learning Share</title>
+<meta name="theme-color" content="#F5F2EA" />
+<link rel="icon" type="image/png" href="/img/logo-128.png" />
+<link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="logo" href="/"><span class="mark"><img src="/img/logo-128.png" alt="AI Learning Share logo" /></span> AI Learning <em>Share</em></a>
+    <nav class="nav-links">
+      <a href="/#syllabus">Syllabus</a>
+      <a href="/#register">Register</a>
+      <a href="/#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-sm btn-ghost" href="/">Home</a>
+  </div>
+</header>
+
+<main class="ticket-page">
+  <div class="wrap">
+
+    <!-- ───────── lookup ───────── -->
+    <div id="lookup" style="max-width:520px;margin:10px auto 0">
+      <p class="kicker" style="justify-content:center">Admission</p>
+      <h1 style="font-size:clamp(30px,5vw,44px);letter-spacing:-.04em;text-align:center;margin:14px 0 10px">Find your ticket</h1>
+      <p class="muted center" style="margin-bottom:26px">
+        Enter the code from your confirmation — or your registered email, then your mobile number.
+      </p>
+
+      <div class="form-card">
+        <form class="form" id="lookup-form">
+          <div class="field">
+            <label for="code">Ticket code</label>
+            <input id="code" placeholder="AIL-XXXXXX" style="text-transform:uppercase;letter-spacing:.14em;font-family:var(--mono)" />
+            <div class="form-note">Leave blank to look up by email + mobile instead.</div>
+          </div>
+          <div id="lookup-alert" class="alert bad hidden"></div>
+          <button class="btn btn-flame" type="submit" style="width:100%">Open ticket <span class="arrow">→</span></button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ───────── ticket ───────── -->
+    <div id="ticket-view" class="hidden">
+      <div id="paid-banner" class="alert ok hidden center" style="max-width:760px;margin:0 auto 20px"></div>
+
+      <div class="ticket" id="ticket-card">
+        <div class="ticket-top">
+          <div>
+            <span class="stamp" id="t-status">PENDING</span>
+            <h2 id="t-event">AI Learning Share</h2>
+            <p class="muted" style="margin:8px 0 0;font-size:14px" id="t-when"></p>
+          </div>
+          <div style="text-align:right">
+            <span class="stub-label">Ticket</span>
+            <div class="code" id="t-code" style="margin-top:6px">—</div>
+          </div>
+        </div>
+
+        <div class="ticket-body">
+          <dl class="kv">
+            <dt>Attendee</dt><dd id="t-name">—</dd>
+            <dt>Email</dt><dd id="t-email">—</dd>
+            <dt>Mobile</dt><dd id="t-phone">—</dd>
+            <dt>College</dt><dd id="t-college">—</dd>
+            <dt>Amount</dt><dd id="t-amount">—</dd>
+            <dt>Issued</dt><dd id="t-issued">—</dd>
+          </dl>
+          <div class="qr" id="t-qr"></div>
+        </div>
+
+        <!-- paid -->
+        <div id="paid-only" class="ticket-sec hidden">
+          <div class="unlock">
+            <p class="kicker">You're in</p>
+            <h3 style="margin-top:10px">Everything you need for the session</h3>
+            <p class="muted" style="font-size:14.5px;margin:0">
+              Join five to ten minutes early — the host admits by ticket code. This code is also your certificate ID.
+            </p>
+
+            <a class="meet" id="t-meet" href="#" target="_blank" rel="noopener">https://meet.google.com/…</a>
+            <span class="form-note" id="t-meet-raw" style="display:block;margin-top:8px"></span>
+
+            <div class="btn-row" style="margin-top:18px">
+              <a class="btn btn-wa" id="t-wa-group" target="_blank" rel="noopener">Join the WhatsApp group</a>
+              <a class="btn btn-ghost" id="t-drive" target="_blank" rel="noopener">Materials folder</a>
+              <a class="btn btn-ghost" id="t-ics" href="#">Add to calendar</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- pending -->
+        <div id="pending-only" class="ticket-sec hidden">
+          <div class="unlock" style="background:#FBF2DE;border-color:#E2CB93">
+            <p class="kicker" style="color:var(--amber)">Payment pending</p>
+            <h3 style="margin-top:10px">Your seat is held — not confirmed</h3>
+            <p style="font-size:15px;margin:0">
+              The Google Meet link and the WhatsApp group unlock the moment we verify your UPI payment. Finish it now — it takes thirty seconds.
+            </p>
+            <div class="upi-box" id="t-upi-box" style="margin-top:18px;background:#fff">
+              <div class="upi-qr" id="t-upi-qr" aria-label="UPI payment QR code"></div>
+              <div>
+                <p style="margin:0"><b>1.</b> Pay <b id="t-upi-amt">₹199</b> — scan with GPay / PhonePe / Paytm, or:</p>
+                <button class="btn btn-ghost btn-sm" id="t-upi-open" type="button" style="margin-top:8px">Open my UPI app</button>
+                <p class="upi-id" id="t-upi-id"></p>
+                <p style="font-size:12px;color:var(--gray-60);margin:6px 0 0"><b>2.</b> Paste the UPI reference no. below — we verify and unlock this ticket in minutes.</p>
+              </div>
+            </div>
+            <div class="field" style="margin-top:14px">
+              <label for="t-upi-utr">UPI transaction / reference number</label>
+              <input id="t-upi-utr" placeholder="e.g. 523419887654" />
+            </div>
+            <div class="btn-row" style="margin-top:18px">
+              <button class="btn btn-flame" id="t-upi-notify" type="button">I have paid — unlock my ticket</button>
+              <a class="btn btn-ghost" id="t-wa-help" target="_blank" rel="noopener">Ask on WhatsApp</a>
+            </div>
+            <div id="pay-alert" class="alert bad hidden" style="margin-top:16px"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row no-print" style="justify-content:center;margin-top:26px">
+        <button class="btn btn-ghost" onclick="window.print()">Print or save as PDF</button>
+        <button class="btn btn-ghost" id="t-share">Share ticket</button>
+        <a class="btn btn-ghost" href="/">Back to home</a>
+      </div>
+
+      <p class="muted center no-print" style="font-size:14px;margin-top:26px">
+        Trouble? <a id="t-wa-help2" target="_blank" rel="noopener" style="color:var(--flame)">message us on WhatsApp</a> in Tamil —
+        <span id="t-contact"></span>
+      </p>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fine" style="border:none;margin:0;padding:0">
+      <span>© <span id="yr"></span> AI Learning Share · Payments via UPI</span>
+      <span>Tamil support available</span>
+    </div>
+  </div>
+</footer>
+
+<script src="/ticket.js"></script>
+</body>
+</html>

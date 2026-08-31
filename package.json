@@ -1,0 +1,29 @@
+{
+  "name": "ai-meet-platform",
+  "version": "1.0.0",
+  "main": "server.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "start": "npm run ensure-deps && node server.js",
+    "dev": "node --watch server.js",
+    "test": "node tests/smoke.mjs",
+    "ensure-deps": "node scripts/ensure-deps.cjs || npm install --no-audit --no-fund --loglevel=error"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "AI Learning Share — event registration, direct-UPI payments, e-tickets and an organiser dashboard (Supabase)",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.109.0",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.2",
+    "playwright": "^1.62.1",
+    "qrcode": "^1.5.4"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  }
+}
