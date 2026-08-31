@@ -61,7 +61,7 @@ export const config = {
     // When true (or when URL/key are missing) registrations are kept in a local
     // JSON file so the site still runs before Supabase is connected.
     useLocal: bool(process.env.USE_LOCAL_DB, false),
-    localFile: process.env.LOCAL_DB_FILE || fileURLToPath(new URL('../data/db.json', import.meta.url)),
+    localFile: process.env.LOCAL_DB_FILE || (process.env.VERCEL ? '/tmp/db.json' : fileURLToPath(new URL('../data/db.json', import.meta.url))),
   },
 
   // ----------------------------------------------------------------- admin ---

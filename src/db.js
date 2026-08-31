@@ -16,13 +16,18 @@ import { config } from './config.js';
 const supabaseReady =
   !config.supabase.useLocal && Boolean(config.supabase.url) && Boolean(config.supabase.serviceKey);
 
-const supabase = supabaseReady
-  ? createClient(config.supabase.url, config.supabase.serviceKey, {
+let supabase = null;
+if (supabaseReady) {
+  try {
+    supabase = createClient(config.supabase.url, config.supabase.serviceKey, {
       auth: { persistSession: false, autoRefreshToken: false },
-    })
-  : null;
+    });
+  } catch (err) {
+    console.error('[DB] Supabase createClient failed:', err.message);
+  }
+}
 
-export const backend = supabaseReady ? 'supabase' : 'local';
+export const backend = supabase ? 'supabase' : 'local';
 
 /* ------------------------------------------------------------------ utils */
 
@@ -55,20 +60,34 @@ function searchFilter(raw) {
 class LocalFile {
   constructor(file) {
     this.file = file;
-    fs.mkdirSync(path.dirname(file), { recursive: true });
-    if (!fs.existsSync(file)) fs.writeFileSync(file, JSON.stringify({ registrations: [] }, null, 2));
+    this.memoryData = { registrations: [] };
+    try {
+      const dir = path.dirname(file);
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+      if (!fs.existsSync(file)) fs.writeFileSync(file, JSON.stringify(this.memoryData, null, 2));
+    } catch (err) {
+      console.warn('[LocalFile] Filesystem write skipped (using memory):', err.message);
+    }
   }
   read() {
     try {
-      return JSON.parse(fs.readFileSync(this.file, 'utf8'));
+      if (fs.existsSync(this.file)) {
+        return JSON.parse(fs.readFileSync(this.file, 'utf8'));
+      }
     } catch {
-      return { registrations: [] };
+      // ignore
     }
+    return this.memoryData;
   }
   write(data) {
-    const tmp = `${this.file}.tmp`;
-    fs.writeFileSync(tmp, JSON.stringify(data, null, 2));
-    fs.renameSync(tmp, this.file);
+    this.memoryData = data;
+    try {
+      const tmp = `${this.file}.tmp`;
+      fs.writeFileSync(tmp, JSON.stringify(data, null, 2));
+      fs.renameSync(tmp, this.file);
+    } catch (err) {
+      console.warn('[LocalFile] Write skipped:', err.message);
+    }
   }
   async insert(row) {
     const data = this.read();
