@@ -74,7 +74,7 @@ export const config = {
   server: {
     port: int(process.env.PORT, 3000),
     host: process.env.HOST || '0.0.0.0',
-    publicBaseUrl: process.env.PUBLIC_BASE_URL || '', // used to build ticket URLs
+    publicBaseUrl: process.env.PUBLIC_BASE_URL || process.env.APP_URL || process.env.BASE_URL || '', // used to build ticket URLs
   },
 
   brand: {
