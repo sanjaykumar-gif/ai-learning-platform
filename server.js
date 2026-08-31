@@ -277,40 +277,75 @@ app.patch('/api/admin/registrations/:id', adminAuth, wrap(async (req, res) => {
 /* ---------------------------------------------------------------- static */
 
 /*
- * Self-contained pages.
- *
- * The Arena in-app preview (and some file viewers) render HTML inside a
- * sandboxed iframe that cannot fetch external stylesheets/scripts. If we ship
- * the CSS/JS as separate files those previews show a raw, unstyled page —
- * exactly the "frontend crashed" report. So the server inlines the stylesheet
- * and the page's own script into the HTML before sending it. Real browsers get
- * the same document; nothing depends on a second request succeeding.
+ * Self-contained pages with resilient multi-path resolution for Vercel / serverless.
  */
-const pub = (f) => fs.readFileSync(path.join(__dirname, 'public', f), 'utf8');
-const STYLE_TAG = `<style>\n${pub('styles.css')}\n</style>`;
-const inlinePage = (file, js) =>
-  pub(file)
-    .replace('<link rel="stylesheet" href="/styles.css" />', STYLE_TAG)
-    .replace(`<script src="/${js}"></script>`, `<script>\n${pub(js)}\n</script>`);
+function getPublicPath(filename) {
+  const candidates = [
+    path.join(__dirname, 'public', filename),
+    path.join(process.cwd(), 'public', filename),
+    path.join(__dirname, '..', 'public', filename),
+    path.resolve('public', filename),
+  ];
+  for (const p of candidates) {
+    try {
+      if (fs.existsSync(p)) return p;
+    } catch {
+      // ignore check error
+    }
+  }
+  return candidates[0];
+}
+
+const pub = (f) => {
+  const target = getPublicPath(f);
+  try {
+    return fs.readFileSync(target, 'utf8');
+  } catch (err) {
+    console.warn(`[WARN] Could not read static file "${f}" from "${target}":`, err.message);
+    return '';
+  }
+};
+
+const inlinePage = (file, js) => {
+  const html = pub(file);
+  const style = pub('styles.css');
+  const script = pub(js);
+  let out = html;
+  if (style) {
+    out = out.replace('<link rel="stylesheet" href="/styles.css" />', `<style>\n${style}\n</style>`);
+  }
+  if (script) {
+    out = out.replace(`<script src="/${js}"></script>`, `<script>\n${script}\n</script>`);
+  }
+  return out;
+};
 
 const PAGES = {
   '/': inlinePage('index.html', 'app.js'),
   '/index.html': null, // alias, resolved below
   '/ticket.html': inlinePage('ticket.html', 'ticket.js'),
   '/admin.html': inlinePage('admin.html', 'admin.js'),
-  '/404.html': pub('404.html').replace('<link rel="stylesheet" href="/styles.css" />', STYLE_TAG),
+  '/404.html': inlinePage('404.html', ''),
 };
 PAGES['/index.html'] = PAGES['/'];
 
 app.get(['/', '/index.html', '/ticket.html', '/admin.html'], (req, res) => {
   res.setHeader('Cache-Control', 'no-store, must-revalidate');
-  res.type('html').send(PAGES[req.path]);
+  const p = PAGES[req.path] || PAGES['/'];
+  res.type('html').send(p);
 });
 
-app.use(express.static(path.join(__dirname, 'public'), {
+const resolvedPublicDir = [
+  path.join(__dirname, 'public'),
+  path.join(process.cwd(), 'public'),
+  path.join(__dirname, '..', 'public'),
+  path.resolve('public'),
+].find((d) => {
+  try { return fs.existsSync(d); } catch { return false; }
+}) || path.join(__dirname, 'public');
+
+app.use(express.static(resolvedPublicDir, {
   extensions: ['html'],
-  // HTML must never be served stale — CSS/JS change between deploys and a
-  // cached old page is the classic "frontend crashed" cause.
   setHeaders: (res, filePath) => {
     if (filePath.endsWith('.html')) res.setHeader('Cache-Control', 'no-store, must-revalidate');
   },
@@ -319,7 +354,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
 app.use('/api', (_req, res) => res.status(404).json({ error: 'Not found' }));
 app.use((req, res) => {
   res.setHeader('Cache-Control', 'no-store, must-revalidate');
-  res.status(404).type('html').send(PAGES['/404.html']);
+  res.status(404).type('html').send(PAGES['/404.html'] || '404 Not Found');
 });
 
 export default app;
