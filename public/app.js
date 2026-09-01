@@ -145,14 +145,18 @@
 
     $('#pill-status').textContent = e.registration_open ? 'Registrations open' : 'Registration closed';
 
+    const waNum = c?.whatsapp_number || c?.whatsappNumber || '917550321307';
+    const urgentNum = c?.urgent_call_number || c?.urgentCallNumber || waNum;
+    const contactEmail = c?.email || 'sanjaykumarvpk@gmail.com';
+
     const waMsg = 'Hi! I want to join the AI Learning Share masterclass.';
-    const setWa = (sel) => { const el = $(sel); if (el) el.href = waLink(c.whatsapp_number, waMsg); };
+    const setWa = (sel) => { const el = $(sel); if (el) el.href = waLink(waNum, waMsg); };
     setWa('#wa-top'); setWa('#wa-contact'); setWa('#f-wa');
-    $('#c-phone').textContent = `+${c.whatsapp_number}`;
-    ['#c-call', '#c-call2', '#f-call'].forEach((sel) => { const el = $(sel); if (el) el.href = `tel:+${c.urgent_call_number}`; });
+    $('#c-phone').textContent = `+${waNum}`;
+    ['#c-call', '#c-call2', '#f-call'].forEach((sel) => { const el = $(sel); if (el) el.href = `tel:+${urgentNum}`; });
     ['#c-mail', '#f-mail'].forEach((sel) => {
       const el = $(sel);
-      if (el) { el.href = `mailto:${c.email}`; el.textContent = c.email; }
+      if (el) { el.href = `mailto:${contactEmail}`; el.textContent = contactEmail; }
     });
 
     if (e.registration_open) {

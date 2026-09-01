@@ -65,10 +65,12 @@
     }
 
     if (state.contact) {
+      const waNum = state.contact.whatsapp_number || state.contact.whatsappNumber || '917550321307';
+      const mail = state.contact.email || 'sanjaykumarvpk@gmail.com';
       const msg = `Hi! My ticket is ${t.ticket_code} — I need help with my registration.`;
-      $('#t-wa-help').href = wa(state.contact.whatsapp_number, msg);
-      $('#t-wa-help2').href = wa(state.contact.whatsapp_number, msg);
-      $('#t-contact').textContent = `${state.contact.email} · +${state.contact.whatsapp_number}`;
+      $('#t-wa-help').href = wa(waNum, msg);
+      $('#t-wa-help2').href = wa(waNum, msg);
+      $('#t-contact').textContent = `${mail} · +${waNum}`;
     }
 
     document.title = `${t.ticket_code} — AI Learning Share`;
@@ -129,19 +131,24 @@
 
     $('#lookup-form').addEventListener('submit', (e) => {
       e.preventDefault();
-      const code = $('#code').value.trim().toUpperCase();
-      if (code) return load(code);
-      // fall back to email lookup
-      const email = prompt('Enter the email you registered with:');
-      if (!email) return;
-      const phone = prompt('Enter the mobile number you registered with:');
-      if (!phone) return;
-      api('/api/lookup', { email, phone })
-        .then((r) => load(r.ticket_code))
-        .catch((err) => {
-          const box = $('#lookup-alert');
-          box.textContent = err.message; box.classList.remove('hidden');
-        });
+      const codeOrEmail = $('#code').value.trim();
+      if (!codeOrEmail) {
+        const email = prompt('Enter the email you registered with:');
+        if (!email) return;
+        const phone = prompt('Enter the mobile number you registered with:');
+        if (!phone) return;
+        return api('/api/lookup', { email, phone })
+          .then((r) => load(r.ticket_code))
+          .catch((err) => {
+            const box = $('#lookup-alert');
+            box.textContent = err.message; box.classList.remove('hidden');
+          });
+      }
+      if (codeOrEmail.includes('@')) {
+        load(codeOrEmail);
+      } else {
+        load(codeOrEmail.toUpperCase());
+      }
     });
 
     $('#t-upi-notify').addEventListener('click', notifyPaid);

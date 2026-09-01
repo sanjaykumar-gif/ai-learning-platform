@@ -124,7 +124,16 @@ app.get('/api/config', (_req, res) => {
     payments: {
       upi: { enabled: Boolean(config.contact.upiId), id: config.contact.upiId, name: config.contact.organizerName },
     },
-    contact: config.contact,
+    contact: {
+      ...config.contact,
+      whatsapp_number: config.contact.whatsappNumber,
+      whatsappNumber: config.contact.whatsappNumber,
+      urgent_call_number: config.contact.urgentCallNumber,
+      urgentCallNumber: config.contact.urgentCallNumber,
+      organizer_name: config.contact.organizerName,
+      organizerName: config.contact.organizerName,
+      preferred_language: config.contact.preferredLanguage,
+    },
   });
 });
 
@@ -203,7 +212,10 @@ app.post('/api/lookup', rateLimit('lookup', 15, 60_000), wrap(async (req, res) =
 
 // 5) TICKET LOOKUP
 app.get('/api/ticket/:code', rateLimit('ticket', 60, 60_000), wrap(async (req, res) => {
-  const row = await db.getByTicketCode(req.params.code);
+  let row = await db.getByTicketCode(req.params.code);
+  if (!row && req.params.code.includes('@')) {
+    row = await db.getByEmail(req.params.code);
+  }
   if (!row) return res.status(404).json({ error: 'Ticket not found. Check the code and try again.' });
   const ticket = publicTicket(row, baseUrl(req));
   ticket.qr_svg = await qrDataUri(ticketUrl(row, baseUrl(req)));
