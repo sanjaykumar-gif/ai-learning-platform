@@ -44,7 +44,7 @@ in `data/db.json` until Supabase is connected.
 
 ```
 POST /api/register        -> ticket_code + registration row (status=pending)
-GET  /api/upi-qr          -> SVG QR encoding upi://pay?pa=<UPI_ID>&pn=&am=199&cu=INR
+GET  /api/upi-qr          -> SVG QR encoding upi://pay?pa=<UPI_ID>&pn=&am=99&cu=INR
                              (plus an "Open my UPI app" deep link on the page)
 buyer pays in GPay/PhonePe/Paytm, then pastes the UPI reference no.
 POST /api/payment/upi-notify -> stores the ref in the registration `notes`
@@ -94,7 +94,7 @@ tests/smoke.mjs        63 end-to-end checks (npm test)
 
 High-energy workshop landing in the be10x style: white / soft-grey bands, a single flame accent
 (`--flame:#ff9933`), dark ink pricing and stat cards, rounded CTA buttons, benefit checklists and
-fact chips (date / hours / live / duration), strikethrough ₹499 → ₹199 offer, review cards and an
+fact chips (date / hours / live / duration), strikethrough ₹499 → ₹99 offer, review cards and an
 FAQ — all bilingual English + Tamil. Type is self-hosted (Poppins body/display, Anek Tamil for the
 Tamil copy). Icons are hand-drawn inline SVG; motion degrades gracefully with `prefers-reduced-motion`
 and the ticket page prints cleanly.

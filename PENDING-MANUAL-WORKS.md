@@ -95,7 +95,7 @@ conversion %, daily chart, ஒவ்வொரு attendee-ோட data, check-in,
 - [ ] Admin dashboard-ல் `paid` count + revenue சரியா வருது
 - [ ] Ticket page QR scan பண்ணா ticket page-ே open ஆகுது
 - [ ] Paid ticket-ல் WhatsApp group + (set பண்ணியிருந்தா) Meet link தெரியுது
-- [ ] `UPI_ID` உங்கள் UPI app-ல் ₹199 prefill ஆகுது
+- [ ] `UPI_ID` உங்கள் UPI app-ல் ₹99 prefill ஆகுது
 - [ ] `ADMIN_PASSWORD` மாத்தப்பட்டது (default வேண்டாம்)
 
 ---
@@ -103,13 +103,13 @@ conversion %, daily chart, ஒவ்வொரு attendee-ோட data, check-in,
 ## 🟡 10. UPI ID — verify yours (Direct UPI payment is ON)
 
 **Why:** Razorpay இல்லாமலே payment வாங்க "Pay with any UPI app" option integrate பண்ணியிருக்கேன்.
-Buyer QR scan செய்வார் / UPI app open செய்வார் → ₹199 உங்கள் account-க்கு → reference number paste செய்வார் →
+Buyer QR scan செய்வார் / UPI app open செய்வார் → ₹99 உங்கள் account-க்கு → reference number paste செய்வார் →
 நீங்க dashboard-ல **Mark paid** அழுத்தினா ticket unlock ஆகும்.
 
 1. `.env`-ல `UPI_ID=sanjaykumarvpk@oksbi` இருக்கு — **இது உங்கள் UPI ID தானா என்று UPI app-ல check செய்யுங்க.**
    Handle வேறையா இருந்தா மாத்துங்க: `@ybl` (PhonePe), `@oksbi` (SBI), `@okaxis` (Axis),
    `@okhdfcbank` (HDFC), `@okicici` (ICICI), `@paytm`.
-2. Test: site-ல "Open my UPI app" அழுத்தி → உங்கள் UPI app-ல ₹199 prefill ஆகுதா என்று பாருங்க.
+2. Test: site-ல "Open my UPI app" அழுத்தி → உங்கள் UPI app-ல ₹99 prefill ஆகுதா என்று பாருங்க.
 3. Buyer reference அனுப்பின பிறகு dashboard table-ல அந்த ref தெரியும்; bank app-ல amount match ஆனா **Mark paid**.
 4. UPI option வேண்டாம்-னா `UPI_ID=` (காலி) விடுங்க — அந்த box மறைந்துவிடும்.
 
