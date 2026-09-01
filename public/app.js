@@ -142,6 +142,10 @@
     $('#price').innerHTML = `<sup>₹</sup>${rupees}`;
     $('#stub-price').textContent = `₹${rupees}`;
     $('#pay-amount').textContent = cfg.price.display;
+    if ($('#bonus-price')) $('#bonus-price').textContent = cfg.price.display;
+    if ($('#bonus-title-price')) $('#bonus-title-price').textContent = cfg.price.display;
+    if ($('#cta-price')) $('#cta-price').textContent = cfg.price.display;
+    if ($('#offer-bar-price')) $('#offer-bar-price').textContent = `${cfg.price.display} only`;
 
     $('#pill-status').textContent = e.registration_open ? 'Registrations open' : 'Registration closed';
 

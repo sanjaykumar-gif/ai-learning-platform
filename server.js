@@ -321,7 +321,7 @@ const pub = (f) => {
 const inlinePage = (file, js) => {
   const html = pub(file);
   const style = pub('styles.css');
-  const script = pub(js);
+  const script = js ? pub(js) : '';
   let out = html;
   if (style) {
     out = out.replace('<link rel="stylesheet" href="/styles.css" />', `<style>\n${style}\n</style>`);
@@ -332,19 +332,17 @@ const inlinePage = (file, js) => {
   return out;
 };
 
-const PAGES = {
-  '/': inlinePage('index.html', 'app.js'),
-  '/index.html': null, // alias, resolved below
-  '/ticket.html': inlinePage('ticket.html', 'ticket.js'),
-  '/admin.html': inlinePage('admin.html', 'admin.js'),
-  '/404.html': inlinePage('404.html', ''),
+const getPage = (p) => {
+  if (p === '/' || p === '/index.html') return inlinePage('index.html', 'app.js');
+  if (p === '/ticket.html') return inlinePage('ticket.html', 'ticket.js');
+  if (p === '/admin.html') return inlinePage('admin.html', 'admin.js');
+  if (p === '/404.html') return inlinePage('404.html', '');
+  return inlinePage('index.html', 'app.js');
 };
-PAGES['/index.html'] = PAGES['/'];
 
 app.get(['/', '/index.html', '/ticket.html', '/admin.html'], (req, res) => {
   res.setHeader('Cache-Control', 'no-store, must-revalidate');
-  const p = PAGES[req.path] || PAGES['/'];
-  res.type('html').send(p);
+  res.type('html').send(getPage(req.path));
 });
 
 const resolvedPublicDir = [
@@ -366,7 +364,7 @@ app.use(express.static(resolvedPublicDir, {
 app.use('/api', (_req, res) => res.status(404).json({ error: 'Not found' }));
 app.use((req, res) => {
   res.setHeader('Cache-Control', 'no-store, must-revalidate');
-  res.status(404).type('html').send(PAGES['/404.html'] || '404 Not Found');
+  res.status(404).type('html').send(getPage('/404.html') || '404 Not Found');
 });
 
 export default app;
