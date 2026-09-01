@@ -116,8 +116,15 @@
     try {
       await api('/api/payment/upi-notify', { ticket_code: state.ticket.ticket_code, utr });
       box.className = 'alert ok';
-      box.textContent = 'Reference received! We will verify and unlock your ticket in minutes — you can close this page and check back anytime.';
+      box.textContent = 'Reference received! Click the button below to send your confirmation on WhatsApp to Sanjay for instant verification:';
       box.classList.remove('hidden');
+      const waNum = state.contact?.whatsapp_number || state.contact?.whatsappNumber || '917550321307';
+      const waText = `Hi Sanjay, I have paid ₹${state.ticket.amount_display} for the AI Learning Share Masterclass!\n\n👤 Name: ${state.ticket.name}\n📱 Mobile: ${state.ticket.phone}\n🎟️ Ticket: ${state.ticket.ticket_code}\n🔢 UPI Ref: ${utr}`;
+      const waBtn = $('#t-wa-send-proof');
+      if (waBtn) {
+        waBtn.href = wa(waNum, waText);
+        waBtn.classList.remove('hidden');
+      }
       $('#t-upi-utr').value = '';
     } catch (err) {
       box.className = 'alert bad'; box.textContent = err.message; box.classList.remove('hidden');

@@ -81,19 +81,19 @@
     }
     $('#rows').innerHTML = rows
       .map((r) => `<tr data-id="${r.id}">
-        <td><span class="code" style="font-size:14px">${esc(r.ticket_code)}</span>${r.notes ? `<span class="mini">${esc(r.notes)}</span>` : ''}</td>
+        <td><span class="code" style="font-size:14px">${esc(r.ticket_code)}</span>${r.notes ? `<div style="font-size:12px;color:var(--amber);margin-top:4px;font-weight:600">${esc(r.notes)}</div>` : ''}</td>
         <td>${esc(r.name)}${r.attended ? ' <span class="stamp paid" style="font-size:10px">IN</span>' : ''}<span class="mini">${esc(r.course || '')} ${esc(r.year || '')}</span></td>
         <td>${esc(r.email)}<span class="mini">${esc(r.phone || '')}</span></td>
         <td class="muted">${esc(r.college || '—')}</td>
         <td><span class="stamp ${r.status}">${r.status}</span></td>
         <td>${money(r.amount_paise)}</td>
         <td class="muted">${dt(r.paid_at)}</td>
-        <td style="white-space:nowrap">
-          <a class="btn btn-ghost btn-sm" style="padding:6px 11px;font-size:12.5px" target="_blank" rel="noopener" href="https://wa.me/91${r.phone}?text=${encodeURIComponent(`Hi ${r.name}, regarding your AI Masterclass ticket ${r.ticket_code}`)}">Message</a>
-          <a class="btn btn-ghost btn-sm" style="padding:6px 11px;font-size:12.5px" target="_blank" href="/ticket.html?code=${encodeURIComponent(r.ticket_code)}">Ticket</a>
+        <td style="white-space:nowrap;display:flex;gap:6px;align-items:center">
+          <a class="btn btn-wa btn-sm" style="padding:5px 9px;font-size:12px" target="_blank" rel="noopener" href="https://wa.me/91${String(r.phone).replace(/\D/g, '').slice(-10)}?text=${encodeURIComponent(`Hi ${r.name}, this is Sanjay from AI Learning Share!`)}">WhatsApp</a>
+          <a class="btn btn-ghost btn-sm" style="padding:5px 9px;font-size:12px" target="_blank" href="/ticket.html?code=${encodeURIComponent(r.ticket_code)}">Ticket</a>
           ${r.status === 'paid'
-            ? `<button class="btn btn-ghost btn-sm" data-act="checkin" style="padding:6px 11px;font-size:12.5px">Check in</button>`
-            : `<button class="btn btn-ghost btn-sm" data-act="markpaid" style="padding:6px 11px;font-size:12.5px">Mark paid</button>`}
+            ? `<button class="btn btn-ghost btn-sm" data-act="checkin" style="padding:5px 9px;font-size:12px">Check in</button>`
+            : `<button class="btn btn-ghost btn-sm" data-act="markpaid" style="padding:5px 9px;font-size:12px;color:var(--leaf);font-weight:700">Mark paid</button>`}
         </td>
       </tr>`)
       .join('');

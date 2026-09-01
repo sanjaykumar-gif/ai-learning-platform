@@ -205,7 +205,13 @@
             college: $('#college').value, course: $('#course').value, year: $('#year').value,
           });
           const done = await api('/api/payment/upi-notify', { registration_id: reg.registration_id, utr });
-          alertBox('ok', `Thanks ${v.name}! We received your reference. Your ticket ${done.ticket_code} unlocks as soon as we verify the payment (usually within minutes). Track it any time: /ticket.html?code=${done.ticket_code}`);
+          alertBox('ok', `Thanks ${v.name}! We received your reference. Click the button below to send your confirmation on WhatsApp to Sanjay for instant verification!`);
+          const waText = `Hi Sanjay, I have registered and paid ₹${state.config?.price?.amount_paise / 100} for the AI Learning Share Masterclass!\n\n👤 Name: ${v.name}\n📱 Mobile: ${v.phone}\n📧 Email: ${v.email}\n🎟️ Ticket: ${done.ticket_code}\n🔢 UPI Ref: ${utr}`;
+          const waBtn = $('#wa-send-proof');
+          if (waBtn) {
+            waBtn.href = waLink(waNum, waText);
+            waBtn.classList.remove('hidden');
+          }
           $('#upi-utr').value = '';
         } catch (err) {
           alertBox('bad', err.message);
