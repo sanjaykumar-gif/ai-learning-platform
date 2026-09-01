@@ -153,11 +153,19 @@
     const urgentNum = c?.urgent_call_number || c?.urgentCallNumber || waNum;
     const contactEmail = c?.email || 'sanjaykumarvpk@gmail.com';
 
+    const cleanPhone = (n) => {
+      const s = String(n || '').replace(/[^\d]/g, '');
+      if (s.length === 12 && s.startsWith('91')) return s.slice(2);
+      return s;
+    };
+    const directPhone = cleanPhone(waNum);
+    const directUrgent = cleanPhone(urgentNum);
+
     const waMsg = 'Hi! I want to join the AI Learning Share masterclass.';
     const setWa = (sel) => { const el = $(sel); if (el) el.href = waLink(waNum, waMsg); };
     setWa('#wa-top'); setWa('#wa-contact'); setWa('#f-wa');
-    $('#c-phone').textContent = `+${waNum}`;
-    ['#c-call', '#c-call2', '#f-call'].forEach((sel) => { const el = $(sel); if (el) el.href = `tel:+${urgentNum}`; });
+    $('#c-phone').textContent = directPhone;
+    ['#c-call', '#c-call2', '#f-call'].forEach((sel) => { const el = $(sel); if (el) el.href = `tel:${directUrgent}`; });
     ['#c-mail', '#f-mail'].forEach((sel) => {
       const el = $(sel);
       if (el) { el.href = `mailto:${contactEmail}`; el.textContent = contactEmail; }

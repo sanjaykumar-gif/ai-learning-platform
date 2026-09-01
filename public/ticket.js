@@ -66,11 +66,12 @@
 
     if (state.contact) {
       const waNum = state.contact.whatsapp_number || state.contact.whatsappNumber || '917550321307';
+      const cleanWa = waNum.replace(/^\+/, '').replace(/^91(?=\d{10})/, '');
       const mail = state.contact.email || 'sanjaykumarvpk@gmail.com';
       const msg = `Hi! My ticket is ${t.ticket_code} — I need help with my registration.`;
       $('#t-wa-help').href = wa(waNum, msg);
       $('#t-wa-help2').href = wa(waNum, msg);
-      $('#t-contact').textContent = `${mail} · +${waNum}`;
+      $('#t-contact').textContent = `${mail} · ${cleanWa}`;
     }
 
     document.title = `${t.ticket_code} — AI Learning Share`;
