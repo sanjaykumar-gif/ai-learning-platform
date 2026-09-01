@@ -167,7 +167,15 @@
       catch { alert(url); }
     });
 
-    // Owner-only: Ctrl+Shift+A opens the organiser dashboard (no public link anywhere).
+    // Owner-only: Double click logo or Ctrl+Shift+A opens the organiser dashboard.
+    const logo = document.querySelector('.logo') || document.querySelector('.mark');
+    if (logo) {
+      logo.addEventListener('dblclick', (ev) => {
+        ev.preventDefault();
+        window.location.href = '/admin.html';
+      });
+    }
+
     window.addEventListener('keydown', (ev) => {
       if (ev.ctrlKey && ev.shiftKey && (ev.key === 'A' || ev.key === 'a')) {
         ev.preventDefault();

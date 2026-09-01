@@ -224,7 +224,24 @@
 
     $('#reg-form').addEventListener('submit', handleSubmit);
 
-    // Owner-only: Ctrl+Shift+A opens the organiser dashboard (no public link anywhere).
+    // Owner-only: Double click / tap photo or Ctrl+Shift+A opens the organiser dashboard.
+    const avatar = $('#host-avatar') || document.querySelector('.av');
+    if (avatar) {
+      avatar.addEventListener('dblclick', (ev) => {
+        ev.preventDefault();
+        window.location.href = '/admin.html';
+      });
+      let lastTap = 0;
+      avatar.addEventListener('touchend', (ev) => {
+        const now = Date.now();
+        if (now - lastTap < 400 && now - lastTap > 0) {
+          ev.preventDefault();
+          window.location.href = '/admin.html';
+        }
+        lastTap = now;
+      });
+    }
+
     window.addEventListener('keydown', (ev) => {
       if (ev.ctrlKey && ev.shiftKey && (ev.key === 'A' || ev.key === 'a')) {
         ev.preventDefault();
